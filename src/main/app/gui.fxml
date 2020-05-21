@@ -219,10 +219,13 @@
                               <Font size="14.0" />
                            </font>
                         </TextArea>
-                        <ImageView fx:id="btnHideHelp" fitHeight="25.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" smooth="false" translateX="200.0" translateY="-45.0">
+                        <ImageView fx:id="btnHideHelp" fitHeight="25.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" smooth="false" translateX="195.0" translateY="-45.0">
                            <image>
                               <Image url="@CLOSE.png" />
                            </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </ImageView>
                      </children>
                      <opaqueInsets>
@@ -475,7 +478,7 @@
                                  <children>
                                     <VBox alignment="CENTER" layoutY="15.0" prefHeight="257.0" prefWidth="377.0">
                                        <children>
-                                          <Label contentDisplay="CENTER" text="Failure text B" textFill="WHITE">
+                                          <Label contentDisplay="CENTER" text="Success text B" textFill="WHITE">
                                              <font>
                                                 <Font size="16.0" />
                                              </font>
@@ -798,13 +801,13 @@
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="76.0" prefWidth="866.0" spacing="10.0">
                <children>
-                  <Label text="Author" textFill="WHITE">
+                  <Label prefHeight="25.0" prefWidth="56.0" text="Author" textFill="WHITE">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
                   <TextField fx:id="txtAuthor" />
-                  <Label text="Contact" textFill="WHITE" textOverrun="CLIP">
+                  <Label prefHeight="25.0" prefWidth="65.0" text="Contact" textFill="WHITE" textOverrun="CLIP">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -813,21 +816,29 @@
                      </HBox.margin>
                   </Label>
                   <TextField fx:id="txtContact" prefHeight="25.0" prefWidth="163.0" />
-                  <Button fx:id="btnSaveUser" mnemonicParsing="false" style="-fx-background-color: black; -fx-border-color: white;" text="Save user data" textFill="WHITE">
+                  <Button fx:id="btnSaveUser" mnemonicParsing="false" prefHeight="32.0" prefWidth="118.0" style="-fx-background-color: black; -fx-border-color: white;" text="Save user data" textFill="WHITE">
                      <font>
                         <Font size="14.0" />
                      </font>
                      <HBox.margin>
                         <Insets left="15.0" />
                      </HBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
-                  <Hyperlink alignment="CENTER" prefHeight="23.0" prefWidth="253.0" text="Check for updates.      By Dae." textFill="#ff40ff" />
+                  <VBox alignment="CENTER" prefHeight="76.0" prefWidth="252.0">
+                     <children>
+                        <Hyperlink fx:id="linkRepo" alignment="CENTER" prefHeight="18.0" prefWidth="220.0" text="Check for updates.      By Dae." textFill="#ff40ff" />
+                        <Hyperlink fx:id="linkDiscord" alignment="CENTER" prefHeight="18.0" prefWidth="220.0" text="WOH DIscord : share and  dl events" textFill="#ff40ff" />
+                     </children>
+                  </VBox>
                </children>
                <HBox.margin>
                   <Insets left="55.0" />
                </HBox.margin>
             </HBox>
-            <ButtonBar prefHeight="51.0" prefWidth="377.0">
+            <ButtonBar prefHeight="51.0" prefWidth="414.0">
               <buttons>
                   <Button fx:id="btnExit" mnemonicParsing="false" style="-fx-background-color: black; -fx-border-color: white; -fx-border-width: 3;" text="Exit" textFill="WHITE">
                      <font>
@@ -837,7 +848,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Button>
-                <Button fx:id="btnLoadIto" mnemonicParsing="false" style="-fx-background-color: black; -fx-border-color: white; -fx-border-width: 3;" text="Load .ito" textFill="WHITE">
+                <Button fx:id="btnLoadIto" mnemonicParsing="false" prefHeight="51.0" prefWidth="147.0" style="-fx-background-color: black; -fx-border-color: white; -fx-border-width: 3;" text="Load .ito" textFill="WHITE">
                      <font>
                         <Font size="21.0" />
                      </font>

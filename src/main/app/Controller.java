@@ -1,22 +1,17 @@
 package app;
 
-import com.sun.jdi.BooleanType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.*;
-import javafx.util.converter.BooleanStringConverter;
-
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -24,6 +19,8 @@ public class Controller implements Initializable {
 
     List<String> locationsList = Arrays.asList("downtown", "apartment", "school", "hospital", "seaside", "forest", "mansion", "schoolhospital", "seasideforest", "village", "atorasu", "athyola","gozu","ithotu");
     List<String> checksList = Arrays.asList("story", "strength", "dexterity", "perception", "knowledge", "luck", "charisma","funds1","funds2");
+    List<String> itemList = Arrays.asList("STEAK KNIFE", "CAMERA", "NICE RING", "KENDO HELMET", "SEWING KIT", "BACKPACK", "WINE BOTTLE", "CIGARETTES", "SMALL CANDLE", "CARPENTER HAMMER", "HOLY CANDLE", "MUMMIFIED HEART", "LIBRARY NOTES", "POLICE REVOLVER", "FLASHLIGHT", "PAINKILLER", "BLUE GEM", "LONG PIG STEAK", "LUMP OF FLESH", "RITUAL MASK", "GRIMORIE", "RITUAL DAGGER", "HUMAN SKULL", "GLASS EYE", "KATANA", "BONE SAW", "CURSED DOLL", "EMPTY BOTTLE", "SLUDGE BOTTLE", "MILK BOTTLE", "RITUAL ROBE", "CHAMPAGNE", "LOST TAPES", "DUST OF SEEING", "PRESCRIPTION PILLS", "STALKER'S MASK", "BASEBALL BAT", "FOREIGN CIGARETTES", "LIBRARY BOOK", "PANCAKES", "ARMY KNIFE", "ELDRITCH AMULET", "CURSED CARTRIDGE", "CURIOUS STATUETTE", "POCKET KNIFE", "SCALPEL", "LUCKY EARRINGS", "GHOST DUST", "HUNTING RIFLE", "HAPPI COAT", "TAIYAKI", "WOODEN BAT", "MAP", "PRESCRIPTION", "BRANCH", "COMPASS", "ENERGY DRINK", "SALT", "PRAYER BEADS", "BROKEN BOTTLE", "CAN OF ACID", "TINY KEY", "GOBLET", "SMELLY MEAT", "CROWBAR", "FIRE AXE", "KARUKOSA MASK", "ANCIENT RING", "SHOVEL", "BANDAGE", "CURSED SCISSORS", "TORCH", "CRESTFALLEN MASK", "MEAT CLEAVER", "BLACK HAIR", "SEWING KIT HAIR", "TOME OF ROT", "FORBIDDEN BOTANY", "DOG TREATS", "GRUESOME TOTEM", "PAIN MEDICATION", "EXPERIMENTAL DRUG", "EXTRA AMMO", "SPORT RIFLE", "WATER BOTTLE", "MEDICAL KIT", "OLD SHOTGUN", "ROCK RING", "PATINA RING", "DEMON MASK", "DIY FLAMETHROWER"
+    );
     List<String> rewardsList = Arrays.asList("none", "experience", "stamina", "reason", "doom", "funds", "item", "injury", "curse", "spell", "ally");
     List<String> extraRewardsList = Arrays.asList("none", "experience", "stamina", "reason", "doom");
     List<String> visualEffectsList = Arrays.asList("none", "whiteflash", "bloodsplat");
@@ -34,8 +31,6 @@ public class Controller implements Initializable {
     List<ComboBox<String>> comboChecks = new ArrayList<>();
     List<ComboBox<String>> comboVisual = new ArrayList<>();
     List<ComboBox<String>> comboExtraRewards = new ArrayList<>();
-
-
 
     @FXML
     TextField textTitle;
@@ -251,6 +246,12 @@ public class Controller implements Initializable {
 
     @FXML
     ImageView btnHideHelp;
+
+    @FXML
+    Hyperlink linkDiscord;
+
+    @FXML
+    Hyperlink linkRepo;
 
     Dialog imageViewDialog = new Dialog();
 
@@ -560,8 +561,9 @@ public class Controller implements Initializable {
             } catch (final IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            checksList = Files.readAllLines(Paths.get(statchecks.toURI()));
         }
-
 
         comboCheckA.getItems().addAll(checksList);
         comboCheckB.getItems().addAll(checksList);
@@ -580,6 +582,8 @@ public class Controller implements Initializable {
             } catch (final IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            rewardsList = Files.readAllLines(Paths.get(rewards.toURI()));
         }
 
         comboRewards.forEach(cmb -> {
@@ -587,6 +591,19 @@ public class Controller implements Initializable {
             cmb.getSelectionModel().select(0);
         });
 
+        // reads valid itemlist from disk. If no file is present, generates one with currently known strings.
+        final File items = Paths.get(System.getProperty("user.home"), "WOHMaker", "itemlist.txt").toFile();
+        if (!items.exists()){
+            try (final BufferedWriter writer = new BufferedWriter(new FileWriter(items))) {
+                for (String s: itemList) {
+                    writer.write(s + System.lineSeparator());
+                }
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            itemList = Files.readAllLines(Paths.get(items.toURI()));
+        }
 
         // reads valid extra rewards from disk. If no file is present, generates one with currently known strings.
         final File extraRewards = Paths.get(System.getProperty("user.home"), "WOHMaker", "extrarewards.txt").toFile();
@@ -598,6 +615,8 @@ public class Controller implements Initializable {
             } catch (final IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            extraRewardsList = Files.readAllLines(Paths.get(extraRewards.toURI()));
         }
 
         comboExtraRewards.forEach(cmb -> {
@@ -615,6 +634,8 @@ public class Controller implements Initializable {
             } catch (final IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            visualEffectsList = Files.readAllLines(Paths.get(visualEffects.toURI()));
         }
 
         comboVisual.forEach(cmb -> {
@@ -695,7 +716,6 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     void saveIto(File ito) throws IOException {
