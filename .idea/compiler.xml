@@ -20,7 +20,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="WOHMaker" target="1.5" />
+      <module name="WOHMaker" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

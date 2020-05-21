@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.*;
 import java.io.*;
 import java.net.URL;
@@ -259,6 +260,8 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        Font.loadFont(Controller.class.getResource("/Silver.ttf").toExternalForm(), 38);
 
         comboRewards.addAll(Arrays.asList(cmbRewardsA,cmbRewardsAF,cmbRewardsB,cmbRewardsBF,cmbRewardsC,cmbRewardsCF));
         comboExtraRewards.addAll(Arrays.asList(cmbExtraRewardsA,cmbExtraRewardsAF,cmbExtraRewardsB,cmbExtraRewardsBF,cmbExtraRewardsC,cmbExtraRewardsCF));

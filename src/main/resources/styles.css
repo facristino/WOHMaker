@@ -1,0 +1,19 @@
+.text-area {
+  -fx-font-family: Silver;
+  -fx-font-size: 22;
+}
+
+.helpArea .scroll-bar{
+  -fx-opacity: 0;
+  -fx-max-width: 0px;
+}
+
+.helpArea .content{
+  -fx-background-color: black;
+}
+
+
+
+.helpArea {
+  -fx-text-fill: white;
+}
