@@ -77,7 +77,7 @@
                                     <Insets top="20.0" />
                                  </VBox.margin>
                               </HBox>
-                              <Label fx:id="lblTooLong" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="607.0" text="Text is too long!" textFill="RED" visible="false">
+                              <Label fx:id="lblTooLong" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="607.0" text="Probably too long!" textFill="RED" visible="false">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font></Label>
@@ -342,6 +342,7 @@
                                                 <Insets />
                                              </VBox.margin>
                                           </TextArea>
+                                          <Label fx:id="lblAS" alignment="CENTER" prefHeight="17.0" prefWidth="649.0" text="Probably too long!" textFill="RED" visible="false" />
                                           <GridPane alignment="CENTER" prefHeight="125.0" prefWidth="347.0">
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="96.0" minWidth="10.0" prefWidth="95.0" />
@@ -418,6 +419,7 @@
                                                 <Font size="15.0" />
                                              </font>
                                           </TextArea>
+                                          <Label fx:id="lblAF" alignment="CENTER" prefHeight="17.0" prefWidth="495.0" text="Probably too long!" textFill="RED" visible="false" />
                                           <GridPane alignment="CENTER">
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="95.0" />
@@ -530,6 +532,7 @@
                                                 <Font size="15.0" />
                                              </font>
                                           </TextArea>
+                                          <Label fx:id="lblBS" alignment="CENTER" prefHeight="17.0" prefWidth="443.0" text="Probably too long!" textFill="RED" visible="false" />
                                           <GridPane alignment="CENTER">
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -594,6 +597,7 @@
                                                 <Font size="15.0" />
                                              </font>
                                           </TextArea>
+                                          <Label fx:id="lblBD" alignment="CENTER" prefHeight="17.0" prefWidth="443.0" text="Probably too long!" textFill="RED" visible="false" />
                                           <GridPane alignment="CENTER">
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -706,6 +710,7 @@
                                                 <Font size="15.0" />
                                              </font>
                                           </TextArea>
+                                          <Label fx:id="lblCS" alignment="CENTER" prefHeight="17.0" prefWidth="443.0" text="Probably too long!" textFill="RED" visible="false" />
                                           <GridPane alignment="CENTER">
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -770,6 +775,7 @@
                                                 <Font size="15.0" />
                                              </font>
                                           </TextArea>
+                                          <Label fx:id="lblCF" alignment="CENTER" prefHeight="17.0" prefWidth="443.0" text="Probably too long!" textFill="RED" visible="false" />
                                           <GridPane alignment="CENTER">
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -864,7 +870,7 @@
                      </HBox.margin>
                   </Label>
                   <TextField fx:id="txtContact" prefHeight="25.0" prefWidth="163.0" stylesheets="@styles.css" />
-                  <Button fx:id="btnSaveUser" mnemonicParsing="false" prefHeight="32.0" prefWidth="118.0" style="-fx-background-color: black; -fx-border-color: white;" text="Save user data" textFill="WHITE">
+                  <Button fx:id="btnSaveUser" mnemonicParsing="false" prefHeight="32.0" prefWidth="121.0" style="-fx-background-color: black; -fx-border-color: white;" text="Save user data" textFill="WHITE">
                      <font>
                         <Font size="14.0" />
                      </font>

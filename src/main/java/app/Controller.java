@@ -1,5 +1,7 @@
 package app;
 
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -9,29 +11,59 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.*;
+import javafx.util.Pair;
+
+import java.awt.Desktop;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
+
 public class Controller implements Initializable {
 
     List<String> locationsList = Arrays.asList("downtown", "apartment", "school", "hospital", "seaside", "forest", "mansion", "schoolhospital", "seasideforest", "village", "atorasu", "athyola","gozu","ithotu");
     List<String> checksList = Arrays.asList("story", "strength", "dexterity", "perception", "knowledge", "luck", "charisma","funds1","funds2");
-    List<String> itemList = Arrays.asList("STEAK KNIFE", "CAMERA", "NICE RING", "KENDO HELMET", "SEWING KIT", "BACKPACK", "WINE BOTTLE", "CIGARETTES", "SMALL CANDLE", "CARPENTER HAMMER", "HOLY CANDLE", "MUMMIFIED HEART", "LIBRARY NOTES", "POLICE REVOLVER", "FLASHLIGHT", "PAINKILLER", "BLUE GEM", "LONG PIG STEAK", "LUMP OF FLESH", "RITUAL MASK", "GRIMORIE", "RITUAL DAGGER", "HUMAN SKULL", "GLASS EYE", "KATANA", "BONE SAW", "CURSED DOLL", "EMPTY BOTTLE", "SLUDGE BOTTLE", "MILK BOTTLE", "RITUAL ROBE", "CHAMPAGNE", "LOST TAPES", "DUST OF SEEING", "PRESCRIPTION PILLS", "STALKER'S MASK", "BASEBALL BAT", "FOREIGN CIGARETTES", "LIBRARY BOOK", "PANCAKES", "ARMY KNIFE", "ELDRITCH AMULET", "CURSED CARTRIDGE", "CURIOUS STATUETTE", "POCKET KNIFE", "SCALPEL", "LUCKY EARRINGS", "GHOST DUST", "HUNTING RIFLE", "HAPPI COAT", "TAIYAKI", "WOODEN BAT", "MAP", "PRESCRIPTION", "BRANCH", "COMPASS", "ENERGY DRINK", "SALT", "PRAYER BEADS", "BROKEN BOTTLE", "CAN OF ACID", "TINY KEY", "GOBLET", "SMELLY MEAT", "CROWBAR", "FIRE AXE", "KARUKOSA MASK", "ANCIENT RING", "SHOVEL", "BANDAGE", "CURSED SCISSORS", "TORCH", "CRESTFALLEN MASK", "MEAT CLEAVER", "BLACK HAIR", "SEWING KIT HAIR", "TOME OF ROT", "FORBIDDEN BOTANY", "DOG TREATS", "GRUESOME TOTEM", "PAIN MEDICATION", "EXPERIMENTAL DRUG", "EXTRA AMMO", "SPORT RIFLE", "WATER BOTTLE", "MEDICAL KIT", "OLD SHOTGUN", "ROCK RING", "PATINA RING", "DEMON MASK", "DIY FLAMETHROWER"
-    );
+    List<String> itemList = Arrays.asList("STEAK KNIFE", "CAMERA", "NICE RING", "KENDO HELMET", "SEWING KIT",
+        "BACKPACK", "WINE BOTTLE", "CIGARETTES", "SMALL CANDLE", "CARPENTER HAMMER", "HOLY CANDLE",
+        "MUMMIFIED HEART", "LIBRARY NOTES", "POLICE REVOLVER", "FLASHLIGHT", "PAINKILLER", "BLUE GEM",
+        "LONG PIG STEAK", "LUMP OF FLESH", "RITUAL MASK", "GRIMORIE", "RITUAL DAGGER", "HUMAN SKULL", "GLASS EYE",
+        "KATANA", "BONE SAW", "CURSED DOLL", "EMPTY BOTTLE", "SLUDGE BOTTLE", "MILK BOTTLE", "RITUAL ROBE",
+        "CHAMPAGNE", "LOST TAPES", "DUST OF SEEING", "PRESCRIPTION PILLS", "STALKER'S MASK", "BASEBALL BAT",
+        "FOREIGN CIGARETTES", "LIBRARY BOOK", "PANCAKES", "ARMY KNIFE", "ELDRITCH AMULET", "CURSED CARTRIDGE",
+        "CURIOUS STATUETTE", "POCKET KNIFE", "SCALPEL", "LUCKY EARRINGS", "GHOST DUST", "HUNTING RIFLE",
+        "HAPPI COAT", "TAIYAKI", "WOODEN BAT", "MAP", "PRESCRIPTION", "BRANCH", "COMPASS", "ENERGY DRINK", "SALT",
+        "PRAYER BEADS", "BROKEN BOTTLE", "CAN OF ACID", "TINY KEY", "GOBLET", "SMELLY MEAT", "CROWBAR", "FIRE AXE",
+        "KARUKOSA MASK", "ANCIENT RING", "SHOVEL", "BANDAGE", "CURSED SCISSORS", "TORCH", "CRESTFALLEN MASK",
+        "MEAT CLEAVER", "BLACK HAIR", "SEWING KIT HAIR", "TOME OF ROT", "FORBIDDEN BOTANY", "DOG TREATS",
+        "GRUESOME TOTEM", "PAIN MEDICATION", "EXPERIMENTAL DRUG", "EXTRA AMMO", "SPORT RIFLE", "WATER BOTTLE",
+        "MEDICAL KIT", "OLD SHOTGUN", "ROCK RING", "PATINA RING", "DEMON MASK", "DIY FLAMETHROWER");
+
+
+    List<String> spellList = Arrays.asList("MIND DRAIN", "REGENERATION", "SKIN PEEL", "MULTIPLY WOUND",
+        "RITUAL OF KNOPHA", "INVISIBILITY", "ABOLISH", "ABSORB", "THIRD EYE", "FLAME OF ITHOTU", "SEAL OF SAVVESH",
+        "SEAL OF BRAMEL", "THREAD OF FATE", "ANCESTRAL STRENGTH", "ENTTHRALLMENT", "AWAKEN", "BINDING AGONY",
+        "WITNESS CURSE", "SHADOW SHROUD", "MEND", "VOID", "CAUTERIZE", "MEMORY EXTRACT", "ASHEN CONTRACT",
+        "MIDASU TOCH", "FLESH REGROWTH", "EXPEL EVIL", "GROW TEETH", "BRAIN WORMS", "TIME WARP", "CLEANSING RITUAL",
+        "TURN BEAST");
     List<String> rewardsList = Arrays.asList("none", "experience", "stamina", "reason", "doom", "funds", "item", "injury", "curse", "spell", "ally");
     List<String> extraRewardsList = Arrays.asList("none", "experience", "stamina", "reason", "doom");
     List<String> visualEffectsList = Arrays.asList("none", "whiteflash", "bloodsplat");
 
     Image eventArt;
 
+    List<TextField> txtExtraRewards = new ArrayList<>();
     List<ComboBox<String>> comboRewards = new ArrayList<>();
     List<ComboBox<String>> comboChecks = new ArrayList<>();
     List<ComboBox<String>> comboVisual = new ArrayList<>();
     List<ComboBox<String>> comboExtraRewards = new ArrayList<>();
+    List<Label> lblWarnings = new ArrayList<>();
+    List<TextField> txtRewardList = new ArrayList<>();
 
     @FXML
     TextField textTitle;
@@ -254,21 +286,119 @@ public class Controller implements Initializable {
     @FXML
     Hyperlink linkRepo;
 
+    @FXML
+    Label lblAS;
+
+    @FXML
+    Label lblAF;
+
+    @FXML
+    Label lblBS;
+
+    @FXML
+    Label lblBD;
+
+    @FXML
+    Label lblCS;
+
+    @FXML
+    Label lblCF;
+
     Dialog imageViewDialog = new Dialog();
 
     String currentImage = "";
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         Font.loadFont(Controller.class.getResource("/Silver.ttf").toExternalForm(), 38);
-
         comboRewards.addAll(Arrays.asList(cmbRewardsA,cmbRewardsAF,cmbRewardsB,cmbRewardsBF,cmbRewardsC,cmbRewardsCF));
         comboExtraRewards.addAll(Arrays.asList(cmbExtraRewardsA,cmbExtraRewardsAF,cmbExtraRewardsB,cmbExtraRewardsBF,cmbExtraRewardsC,cmbExtraRewardsCF));
+        txtRewardList.addAll(Arrays.asList(txtRewardA,txtRewardAF,txtRewardB,txtRewardBF,txtRewardC,txtRewardCF));
         comboVisual.addAll(Arrays.asList(cmbVisualA,cmbVisualAF,cmbVisualB,cmbVisualBF,cmbVisualC,cmbVisualCF));
         comboChecks.addAll(Arrays.asList(comboCheckA,comboCheckB,comboCheckC));
+        lblWarnings.addAll(Arrays.asList(lblAS,lblAF,lblBS, lblBD,lblCS,lblCF));
+        txtExtraRewards.addAll(Arrays.asList(txtExtraRewardA,txtExtraRewardAF,txtExtraRewardB,txtExtraRewardBF,txtExtraRewardC,txtExtraRewardCF));
 
         readPrefs();
+
+        try {
+            loadData();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        installHandlers();
+        installListeners();
+        implementHelpSystem();
+    }
+
+    /**
+     * Listens to things happening and does things
+     */
+
+    void installListeners(){
+
+        textFlav.lengthProperty().addListener((ob,old,newValue) -> lblTooLong.setVisible(newValue.intValue()>350));
+        comboCheckA.getSelectionModel().selectedItemProperty().addListener((ob,old,newValue) -> tabFailureA.setDisable(newValue.equals("story")));
+        comboCheckB.getSelectionModel().selectedItemProperty().addListener((ob,old,newValue) -> tabFailureB.setDisable(newValue.equals("story")));
+        comboCheckC.getSelectionModel().selectedItemProperty().addListener((ob,old,newValue) -> tabFailureC.setDisable(newValue.equals("story")));
+        cmbOptions.getSelectionModel().selectedItemProperty().addListener((ob,old,newValue) -> {
+            optionB.setDisable(newValue.equals("1"));
+            optionC.setDisable(newValue.equals("1") || newValue.equals("2"));
+        });
+
+        ArrayList<Pair<Label,TextArea>> tempWarnList = new ArrayList<>();
+        ArrayList<TextArea> optionStrings = new ArrayList<>(Arrays.asList(txtSuccessA,txtFailureA,txtSuccessB,txtFailureB,txtSuccessC,txtFailureC));
+
+        for (int i = 0; i <comboRewards.size(); i++){
+            tempWarnList.add(new Pair(lblWarnings.get(i),optionStrings.get(i)));
+        }
+
+        tempWarnList.forEach(pair -> {
+            pair.getValue().textProperty().addListener((ob,old,newValue) -> {
+                System.out.println(newValue.length());
+                pair.getKey().setVisible(newValue.length()>220);
+            });
+        });
+
+        chkWavy.selectedProperty().addListener((ob,old,newValue) -> sldWavy.setDisable(!newValue));
+        sldWavy.valueProperty().addListener((ob,old,newValue) -> lblWavyVal.setText(String.format("%.1f", newValue)));
+
+        btnExit.setOnAction(evt -> System.exit(0));
+        txtAuthor.setOnKeyReleased(evt -> btnSaveUser.setDisable(false));
+        txtContact.setOnKeyReleased(evt -> btnSaveUser.setDisable(false));
+
+        // listen to selected type of rewards and refreshes autocompletion lists for all related widgets
+
+        ArrayList<Pair<ComboBox<String>,TextField>> temp = new ArrayList<>();
+
+        for (int i = 0; i <comboRewards.size(); i++){
+            temp.add(new Pair(comboRewards.get(i),txtRewardList.get(i)));
+        }
+
+        temp.forEach(pair -> {
+            pair.getKey().getSelectionModel().selectedItemProperty().addListener(comb -> {
+                final String selectedItem = pair.getKey().getSelectionModel().getSelectedItem();
+                final TextField txtField = pair.getValue();
+                txtField.setDisable(false);
+
+                if (txtField.getText().equals("random")) txtField.setText(" ");
+
+                if (selectedItem.equals("item"))
+                    refreshAutocompletion(txtField, "items");
+                else if (pair.getKey().getSelectionModel().getSelectedItem().equals("spell"))
+                    refreshAutocompletion(txtField, "spells");
+                else if (new ArrayList(Arrays.asList("injury","curse","ally")).contains(selectedItem)) {
+                    refreshAutocompletion(txtField,"none");
+                    txtField.setDisable(true);
+                    txtField.setText("random");
+                }
+            });
+        });
+
+        // Image dialog
 
         imgArt.sceneProperty().addListener(inv -> {
             imageViewDialog.initOwner(imgArt.getScene().getWindow());
@@ -279,49 +409,132 @@ public class Controller implements Initializable {
             imageViewDialog.getDialogPane().setStyle("-fx-background-color: black;");
         });
 
-        try {
-            loadData();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    }
 
-        implementHelpSystem();
+    File prefs = Paths.get(System.getProperty("user.home"), "WOHMaker", "prefs.dat").toFile();
 
-       cmbOptions.getItems().addAll("1","2","3");
+    /**
+     * Implements button logic
+     */
 
-       imgArt.setOnMouseClicked(evt -> {
-           if (!imageViewDialog.isShowing()) {
-               imageViewDialog.setHeaderText(txtPic.getText());
-               final ImageView imageView = new ImageView(imgArt.getImage());
-               imageView.setFitWidth(800);
-               imageView.setPreserveRatio(true);
-               imageView.setSmooth(false);
-               VBox content = new VBox(5);
-               content.setAlignment(Pos.CENTER_RIGHT);
-               content.getChildren().add(imageView);
-               imageViewDialog.getDialogPane().setContent(content);
-               imageViewDialog.show();
-           } else {
-               imageViewDialog.getDialogPane().requestFocus();
-           }
-       });
+
+    void installHandlers() {
+
+        btnSaveUser.setOnAction(evt -> {
+            final File author = Paths.get(System.getProperty("user.home"), "WOHMaker", "author.txt").toFile();
+            if (author.exists())
+                author.delete();
+
+            try (final BufferedWriter writer = new BufferedWriter(new FileWriter(author))) {
+                writer.write(txtAuthor.getText() + System.lineSeparator() + txtAuthor.getText());
+                btnSaveUser.setDisable(true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        btnLoadPic.setOnAction(evt -> {
+
+            FileChooser fileChooser = null;
+            File img = null;
+
+            txtRewardList.forEach(txt -> {
+                if (txt.getText().equals("random")) txt.setText(" ");
+            });
+
+            try {
+                fileChooser = new FileChooser();
+                fileChooser.setInitialDirectory(Paths.get(System.getProperty("user.home"),"AppData", "Local", "wohgame").toFile());
+                fileChooser.getExtensionFilters()
+                    .setAll(new FileChooser.ExtensionFilter("Image files", "*.png", "*.bmp", "*.gif"));
+                fileChooser.setTitle("Select custom event art");
+                img = fileChooser.showOpenDialog(btnLoadPic.getScene().getWindow());
+
+            } catch (Exception e) {
+                fileChooser.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
+                fileChooser.setTitle("WOH Folder couldn't be located, please browser manually.");
+                img = fileChooser.showOpenDialog(btnLoadPic.getScene().getWindow());
+            }
+
+            if (!Objects.isNull(img)) {
+                txtPic.setText(img.getName());
+                imgArt.setImage(new Image(img.toURI().toString()));
+                eventArt = imgArt.getImage();
+                doImageCalculations();
+            }
+        });
+
+        imgArt.setOnMouseClicked(evt -> {
+            if (!imageViewDialog.isShowing()) {
+                imageViewDialog.setHeaderText(txtPic.getText());
+                final ImageView imageView = new ImageView(imgArt.getImage());
+                imageView.setFitWidth(800);
+                imageView.setPreserveRatio(true);
+                imageView.setSmooth(false);
+                VBox content = new VBox(5);
+                content.setAlignment(Pos.CENTER_RIGHT);
+                content.getChildren().add(imageView);
+                imageViewDialog.getDialogPane().setContent(content);
+                imageViewDialog.show();
+            } else {
+                imageViewDialog.getDialogPane().requestFocus();
+            }
+        });
+
+        linkDiscord.setOnAction(evt -> {
+            try {
+                if (Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop()
+                        .browse(new URI("https://discord.com/channels/324155954059018240/690549472542851132"));
+                } else {
+                    // Ubuntu
+                    Runtime runtime = Runtime.getRuntime();
+                    runtime.exec("/usr/bin/firefox -new-window "
+                        + "https://discord.com/channels/324155954059018240/690549472542851132");
+                }
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+        });
+
+
+        linkRepo.setOnAction(evt -> {
+            try {
+                if (Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop()
+                        .browse(new URI("https://github.com/AlejandroRepo/WOHMaker"));
+                } else {
+                    // Ubuntu
+                    Runtime runtime = Runtime.getRuntime();
+                    runtime.exec("/usr/bin/firefox -new-window "
+                        + "https://github.com/AlejandroRepo/WOHMaker");
+                }
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+        });
+
 
         btnSaveIto.setOnAction(evt -> {
 
             FileChooser fileChooser = null;
             File ito = null;
 
+            txtRewardList.forEach(txt -> {
+                if (txt.getText().equals("random")) txt.setText(" ");
+            });
+
             try {
-            fileChooser = new FileChooser();
-            fileChooser.setInitialDirectory(Paths.get(System.getProperty("user.home"),"AppData", "Local", "wohgame").toFile());
-            fileChooser.getExtensionFilters().setAll((new FileChooser.ExtensionFilter("ITO files","*.ito")));
-            fileChooser.setTitle("Save inside 'Custom', 'sandbox' or 'test'!");
-            ito = fileChooser.showSaveDialog(btnLoadPic.getScene().getWindow());
+                fileChooser = new FileChooser();
+                fileChooser.setInitialDirectory(Paths.get(System.getProperty("user.home"),"AppData", "Local", "wohgame").toFile());
+                fileChooser.getExtensionFilters().setAll((new FileChooser.ExtensionFilter("ITO files","*.ito")));
+                fileChooser.setTitle("Save inside 'Custom', 'sandbox' or 'test'!");
+                ito = fileChooser.showSaveDialog(btnLoadPic.getScene().getWindow());
 
             } catch (Exception e) {
                 fileChooser.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
                 fileChooser.setTitle("WOH Folder couldn't be located, please browser manually.");
-                 ito = fileChooser.showSaveDialog(btnLoadPic.getScene().getWindow());
+                ito = fileChooser.showSaveDialog(btnLoadPic.getScene().getWindow());
             }
             if (!Objects.isNull(ito)) {
                 try {
@@ -334,66 +547,69 @@ public class Controller implements Initializable {
 
         btnHideHelp.setOnMouseClicked(evt -> {
             helpArea.setVisible(!helpArea.isVisible());
-                savePrefs("enableHelp",helpArea.isVisible());
+            savePrefs("enableHelp",helpArea.isVisible());
         });
 
         btnLoadIto.setOnAction(evt -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
-            fileChooser.getExtensionFilters().setAll((new FileChooser.ExtensionFilter("ITO files","*.ito")));
-            fileChooser.setTitle("Select custom event file");
-            File ito = fileChooser.showOpenDialog(btnLoadPic.getScene().getWindow());
-            if (ito!=null){
+
+            FileChooser fileChooser = null;
+            File ito = null;
+
+            try {
+                fileChooser = new FileChooser();
+                fileChooser.setInitialDirectory( Paths.get(System.getProperty("user.home"), "AppData", "Local", "wohgame").toFile());
+                fileChooser.getExtensionFilters().setAll((new FileChooser.ExtensionFilter("ITO files", "*.ito")));
+                fileChooser.setTitle("Select custom event file");
+                ito = fileChooser.showOpenDialog(btnLoadPic.getScene().getWindow());
+            }catch (Exception e){
+                fileChooser.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
+                fileChooser.setTitle("WOH Folder couldn't be located, please browser manually.");
+                ito = fileChooser.showSaveDialog(btnLoadPic.getScene().getWindow());
+            }
+
+            if (!Objects.isNull(ito)) {
                 loadIto(ito);
             }
         });
-
-        //Listeners and handlers
-
-        textFlav.lengthProperty().addListener((ob,old,newValue) -> lblTooLong.setVisible(newValue.intValue()>350));
-        comboCheckA.getSelectionModel().selectedItemProperty().addListener((ob,old,newValue) -> tabFailureA.setDisable(newValue.equals("story")));
-        comboCheckB.getSelectionModel().selectedItemProperty().addListener((ob,old,newValue) -> tabFailureB.setDisable(newValue.equals("story")));
-        comboCheckC.getSelectionModel().selectedItemProperty().addListener((ob,old,newValue) -> tabFailureC.setDisable(newValue.equals("story")));
-        cmbOptions.getSelectionModel().selectedItemProperty().addListener((ob,old,newValue) -> {
-            optionB.setDisable(newValue.equals("1"));
-            optionC.setDisable(newValue.equals("1") || newValue.equals("2"));
-        });
-
-        chkWavy.selectedProperty().addListener((ob,old,newValue) -> sldWavy.setDisable(!newValue));
-        sldWavy.valueProperty().addListener((ob,old,newValue) -> lblWavyVal.setText(String.format("%.1f", newValue)));
-
-        btnSaveUser.setOnAction(evt -> {
-            final File author = Paths.get(System.getProperty("user.home"), "WOHMaker", "author.txt").toFile();
-            if (author.exists()) author.delete();
-
-                try (final BufferedWriter writer = new BufferedWriter(new FileWriter(author))) {
-                    writer.write(txtAuthor.getText() + System.lineSeparator() + txtAuthor.getText());
-                    btnSaveUser.setDisable(true);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-        });
-
-        btnLoadPic.setOnAction(evt -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setInitialDirectory(Paths.get(System.getProperty("user.home")).toFile());
-            fileChooser.getExtensionFilters().setAll(new FileChooser.ExtensionFilter("Image files","*.png", "*.bmp","*.gif"));
-            fileChooser.setTitle("Select custom event art");
-            File img = fileChooser.showOpenDialog(btnLoadPic.getScene().getWindow());
-            if (img!=null){
-                txtPic.setText(img.getName());
-                imgArt.setImage(new Image(img.toURI().toString()));
-                eventArt = imgArt.getImage();
-                doImageCalculations();
-            }
-        });
-
-        btnExit.setOnAction(evt -> System.exit(0));
-        txtAuthor.setOnKeyReleased(evt -> btnSaveUser.setDisable(false));
-        txtContact.setOnKeyReleased(evt -> btnSaveUser.setDisable(false));
     }
 
-    File prefs = Paths.get(System.getProperty("user.home"), "WOHMaker", "prefs.dat").toFile();
+    /**
+     * Creates prefs file
+     */
+
+    void createPrefs(){
+        prefs = Paths.get(System.getProperty("user.home"), "WOHMaker", "prefs.dat").toFile();
+        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(prefs))) {
+            writer.write("enableHelp=true"+System.lineSeparator() +
+                "enableArts=true"+System.lineSeparator());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Reads prefs file from disk
+     */
+
+    void readPrefs(){
+        if (prefs.exists()) {
+            try {
+                List<String> strings = Files.readAllLines(prefs.toPath());
+                strings.forEach(str -> {
+                    if (str.equals("enableHelp=false")) helpArea.setVisible(false);
+                    else if (str.equals("enableArts=false")) { imgGuiArt.setVisible(false);}
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            createPrefs();
+        }
+    }
+
+    /**
+     * Writes prefs file
+     */
 
     private void savePrefs(String property, boolean state) {
 
@@ -411,8 +627,8 @@ public class Controller implements Initializable {
                                     e.printStackTrace();
                                 }
                             });
+                        }
                     }
-                }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -423,31 +639,17 @@ public class Controller implements Initializable {
         }
     }
 
-    void createPrefs(){
-        prefs = Paths.get(System.getProperty("user.home"), "WOHMaker", "prefs.dat").toFile();
-        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(prefs))) {
-            writer.write("enableHelp=true"+System.lineSeparator() +
-                     "enableArts=true"+System.lineSeparator());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    /**
+     * Updates the autocompletion list depending on the type of rewards
+     */
 
-    void readPrefs(){
-        if (prefs.exists()) {
-            try {
-                List<String> strings = Files.readAllLines(prefs.toPath());
-                strings.forEach(str -> {
-                    if (str.equals("enableHelp=false")) helpArea.setVisible(false);
-                    else if (str.equals("enableArts=false")) { imgGuiArt.setVisible(false);}
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            createPrefs();
-        }
-    }
+     void refreshAutocompletion(TextField target, String type) {
+         AutoCompletionTextFieldBinding autocomplete = new AutoCompletionTextFieldBinding(target,
+             param -> type.equals("items") ? itemList : type.equals("spells") ? spellList : new ArrayList());
+         autocomplete.setDelay(2);
+         autocomplete.setVisibleRowCount(8);
+         System.out.println("Refreshed "+target +" with "+spellList.size());
+     }
 
     /**
      * Ticks/unticks the big art check depending on image res and warns about resolution not corresponding to woh sizes.
@@ -473,10 +675,10 @@ public class Controller implements Initializable {
 
     // STRINGS
 
-    private static final String REWARDINFO = "Items and spells can be specified in all caps (i.e: FIRE AXE). Leave blank for injuries,allies and curses. Use integers for the rest.";
-    private static final String TESTINFO = "Player stat to be tested. 'Story' means automatic success. 'Funds1' and 'Funds2' succeed if player owns at least 1 or 2 funds, and removes them.";
+    private static final String REWARDINFO = "Autocompletion is your friend.";
+    private static final String TESTINFO = "'Story' means  auto-success. 'Funds'succeed if player owns at least 1/2 funds, and removes them.";
     private static final String VISUALINFO = "Visual effect which will be triggered when this outcome is reached.";
-    private static final String EXTRAREWARDSINFO = "Additional outcome granted to the player for passing the check A. Use integers.";
+    private static final String EXTRAREWARDSINFO = "Please use integers.";
 
     /**
      * Listens to mouse hover to fill the help panel.
@@ -485,13 +687,13 @@ public class Controller implements Initializable {
     void implementHelpSystem(){
 
         textTitle.hoverProperty().addListener((ob,old,newValue) -> {if (newValue) helpArea.setText("Shown on the upper-left part of the screen and mod menu.");});
-        textDesc.hoverProperty().addListener(inv -> helpArea.setText("Shown only in the mod menu. Around 25 chars maximum!"));
-        textFlav.hoverProperty().addListener(inv -> helpArea.setText("The text shown to player when facing the event. Around 350 chars max."));
-        txtAuthor.hoverProperty().addListener(inv -> helpArea.setText("Shown in the lower-left part of the screen, and mod menu."));
-        txtContact.hoverProperty().addListener(inv -> helpArea.setText("NOT shown in-game. A way for the dev to contact you shall it be necessary. @ is implied to be a discord name."));
-        txtSuccessA.hoverProperty().addListener(inv -> helpArea.setText("Text shown if passing the check for option A, or in 'Story' type checks"));
-        txtSuccessB.hoverProperty().addListener(inv -> helpArea.setText("Text shown if passing the check for option B, or in 'Story' type checks"));
-        txtSuccessC.hoverProperty().addListener(inv -> helpArea.setText("Text shown if passing the check for option C, or in 'Story' type checks"));
+        textDesc.hoverProperty().addListener(inv -> helpArea.setText("Shown only in the mod menu. Small! around 25 chars maximum."));
+        textFlav.hoverProperty().addListener(inv -> helpArea.setText("Around 350 chars max. Use # for line breaks."));
+        txtAuthor.hoverProperty().addListener(inv -> helpArea.setText("Shown in the lower-left part of the event screen, and mod menu."));
+        txtContact.hoverProperty().addListener(inv -> helpArea.setText("Not shown in-game. A way for old god panstasz to contact you shall it be necessary."));
+        txtSuccessA.hoverProperty().addListener(inv -> helpArea.setText("Outcome text."));
+        txtSuccessB.hoverProperty().addListener(inv -> helpArea.setText("Outcome text."));
+        txtSuccessC.hoverProperty().addListener(inv -> helpArea.setText("Outcome text."));
         txtFailureA.hoverProperty().addListener(inv -> helpArea.setText("Text shown if failing the check for option A."));
         txtFailureB.hoverProperty().addListener(inv -> helpArea.setText("Text shown if failing the check for option B."));
         txtFailureC.hoverProperty().addListener(inv -> helpArea.setText("Text shown if failing the check for option C."));
@@ -507,6 +709,9 @@ public class Controller implements Initializable {
         btnLoadPic.hoverProperty().addListener(inv -> helpArea.setText("Select the art to display in the event. Small events are 195x164, while big ones are 506x2020. Avoid using other resolutions."));
         btnSaveIto.hoverProperty().addListener(inv -> helpArea.setText("Saves the event to disk as an .ito file. They must be put inside the 'custom','sandbox' or 'test' subfolders inside the wohfolder"));
 
+
+        txtExtraRewards.forEach(txt -> txt.hoverProperty().addListener(inv -> helpArea.setText(EXTRAREWARDSINFO)));
+        txtRewardList.forEach(txt -> txt.hoverProperty().addListener(inv -> helpArea.setText(REWARDINFO)));
         comboExtraRewards.forEach(cmb -> cmb.hoverProperty().addListener(inv -> helpArea.setText(EXTRAREWARDSINFO)));
         comboChecks.forEach(cmb -> cmb.hoverProperty().addListener(inv -> helpArea.setText(TESTINFO)));
         comboRewards.forEach(cmb -> cmb.hoverProperty().addListener(inv -> helpArea.setText(REWARDINFO)));
@@ -589,6 +794,19 @@ public class Controller implements Initializable {
             rewardsList = Files.readAllLines(Paths.get(rewards.toURI()));
         }
 
+        // reads spells data, or generates one
+
+        final File spells = Paths.get(System.getProperty("user.home"), "WOHMaker", "spells.txt").toFile();
+        if (!spells.exists()) {
+            try (final BufferedWriter writer = new BufferedWriter(new FileWriter(spells))) {
+                for (String s : spellList) {
+                    writer.write(s + System.lineSeparator());
+                }
+            }
+        } else {
+            spellList = Files.readAllLines(Paths.get(spells.toURI()));
+        }
+
         comboRewards.forEach(cmb -> {
             cmb.getItems().addAll(rewardsList);
             cmb.getSelectionModel().select(0);
@@ -645,6 +863,8 @@ public class Controller implements Initializable {
             cmb.getItems().addAll(visualEffectsList);
             cmb.getSelectionModel().select(0);
         });
+
+        cmbOptions.getItems().addAll("1","2","3");
 
     }
 
@@ -726,64 +946,64 @@ public class Controller implements Initializable {
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(ito.toPath(), Charset.defaultCharset())) {
             bufferedWriter.write("[event]" + System.lineSeparator());
             bufferedWriter.write(
-                    "name=\"" + textTitle.getText() + "\"" + System.lineSeparator() +
-                            "location=\"" + cmbLocation.getSelectionModel().getSelectedItem() + "\"" + System.lineSeparator() +
-                            "about=\"" + textDesc.getText() + "\"" + System.lineSeparator() +
-                            "author=\"" + txtAuthor.getText() + "\"" + System.lineSeparator() +
-                            "contact=\"" + txtContact.getText() + "\"" + System.lineSeparator()+System.lineSeparator() +
-                            "flavaaaor=\"" + textFlav.getText() + "\"" + System.lineSeparator() +
-                            "image=\"" + txtPic.getText() +"\"" +System.lineSeparator()+
-                            "big=\"" + (chkBigArt.isSelected()? "1": "0") +"\"" + System.lineSeparator() +
-                            "wavy_art=\"" + (chkWavy.isSelected()? "1": "0") +"\"" + System.lineSeparator() +
-                            "wavy_speed=\"" + String.format("%.1f",sldWavy.getValue()) + "\"" + System.lineSeparator() +
-                            "options=\"" + cmbOptions.getSelectionModel().getSelectedItem() + "\"" + System.lineSeparator()+System.lineSeparator() +System.lineSeparator() +
+                "name=\"" + textTitle.getText() + "\"" + System.lineSeparator() +
+                    "location=\"" + cmbLocation.getSelectionModel().getSelectedItem() + "\"" + System.lineSeparator() +
+                    "about=\"" + textDesc.getText() + "\"" + System.lineSeparator() +
+                    "author=\"" + txtAuthor.getText() + "\"" + System.lineSeparator() +
+                    "contact=\"" + txtContact.getText() + "\"" + System.lineSeparator()+System.lineSeparator() +
+                    "flavaaaor=\"" + textFlav.getText() + "\"" + System.lineSeparator() +
+                    "image=\"" + txtPic.getText() +"\"" +System.lineSeparator()+
+                    "big=\"" + (chkBigArt.isSelected()? "1": "0") +"\"" + System.lineSeparator() +
+                    "wavy_art=\"" + (chkWavy.isSelected()? "1": "0") +"\"" + System.lineSeparator() +
+                    "wavy_speed=\"" + String.format("%.1f",sldWavy.getValue()) + "\"" + System.lineSeparator() +
+                    "options=\"" + cmbOptions.getSelectionModel().getSelectedItem() + "\"" + System.lineSeparator()+System.lineSeparator() +System.lineSeparator() +
 
-                            "optiona=\"" + txtOptionA.getText() + "\"" + System.lineSeparator() +
-                            "testa=\"" + comboCheckA.getSelectionModel().getSelectedItem() + "\"" + System.lineSeparator()+System.lineSeparator()+
-                            "successa=\"" + txtSuccessA.getText() + "\"" + System.lineSeparator() +
-                            "winprizea=\"" + (cmbRewardsA.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsA.getSelectionModel().getSelectedItem()) + "\"" +System.lineSeparator()+
-                            "winnumbera=\"" + txtRewardA.getText() + "\"" +System.lineSeparator() +
-                            "extra_winprizea=\"" +  (cmbExtraRewardsA.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsA.getSelectionModel().getSelectedItem())+ "\"" + System.lineSeparator() +
-                            "extra_winnumbera=\"" + txtExtraRewardA.getText() + "\"" +System.lineSeparator() +
-                            "wineffecta=" + (cmbVisualA.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualA.getSelectionModel().getSelectedItem())+ System.lineSeparator() +System.lineSeparator() +
-                            "failurea=\"" + txtFailureA.getText() + "\"" + System.lineSeparator() +
-                            "failprizea=\"" +  (cmbRewardsAF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsAF.getSelectionModel().getSelectedItem())+ "\"" +System.lineSeparator()+
-                            "failnumbera=\"" + txtRewardAF.getText() + "\"" + System.lineSeparator() +
-                            "extra_failprizea=\"" + (cmbExtraRewardsAF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsAF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+
-                            "extra_failnumbera=\"" + txtExtraRewardAF.getText() + "\"" + System.lineSeparator() +
-                            "faileffecta=\"" + (cmbVisualAF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualAF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+System.lineSeparator() +System.lineSeparator() +
+                    "optiona=\"" + txtOptionA.getText() + "\"" + System.lineSeparator() +
+                    "testa=\"" + comboCheckA.getSelectionModel().getSelectedItem() + "\"" + System.lineSeparator()+System.lineSeparator()+
+                    "successa=\"" + txtSuccessA.getText() + "\"" + System.lineSeparator() +
+                    "winprizea=\"" + (cmbRewardsA.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsA.getSelectionModel().getSelectedItem()) + "\"" +System.lineSeparator()+
+                    "winnumbera=\"" + txtRewardA.getText() + "\"" +System.lineSeparator() +
+                    "extra_winprizea=\"" +  (cmbExtraRewardsA.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsA.getSelectionModel().getSelectedItem())+ "\"" + System.lineSeparator() +
+                    "extra_winnumbera=\"" + txtExtraRewardA.getText() + "\"" +System.lineSeparator() +
+                    "wineffecta=" + (cmbVisualA.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualA.getSelectionModel().getSelectedItem())+ System.lineSeparator() +System.lineSeparator() +
+                    "failurea=\"" + txtFailureA.getText() + "\"" + System.lineSeparator() +
+                    "failprizea=\"" +  (cmbRewardsAF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsAF.getSelectionModel().getSelectedItem())+ "\"" +System.lineSeparator()+
+                    "failnumbera=\"" + txtRewardAF.getText() + "\"" + System.lineSeparator() +
+                    "extra_failprizea=\"" + (cmbExtraRewardsAF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsAF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+
+                    "extra_failnumbera=\"" + txtExtraRewardAF.getText() + "\"" + System.lineSeparator() +
+                    "faileffecta=\"" + (cmbVisualAF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualAF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+System.lineSeparator() +System.lineSeparator() +
 
-                            "optionb=\"" + txtOptionB.getText() + "\"" + System.lineSeparator() +
-                            "testb=\"" + comboCheckB.getSelectionModel().getSelectedItem() + "\"" + System.lineSeparator()+System.lineSeparator() +
-                            "successb=\"" + txtSuccessB.getText() + "\"" + System.lineSeparator() +
-                            "winprizeb=\"" + (cmbRewardsB.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsB.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+
-                            "winnumberb=\"" + txtRewardB.getText() + "\"" + System.lineSeparator() +
-                            "extra_winprizeb=\"" + (cmbExtraRewardsB.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsB.getSelectionModel().getSelectedItem())+ "\"" + System.lineSeparator()+
-                            "extra_winnumberb=\"" + txtExtraRewardB.getText() + "\"" + System.lineSeparator() +
-                            "wineffectb=" +(cmbVisualB.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualB.getSelectionModel().getSelectedItem())+ System.lineSeparator() + System.lineSeparator() +
-                            "failureb=\"" + txtFailureB.getText() + "\"" +System.lineSeparator() +
-                            "failprizeb=\"" + (cmbRewardsBF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsBF.getSelectionModel().getSelectedItem()) + "\"" +System.lineSeparator() +
-                            "failnumberb=\"" + txtRewardBF.getText() + "\"" + System.lineSeparator() +
-                            "extra_failprizeb=\"" + (cmbExtraRewardsBF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsBF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+
-                            "extra_failnumberb=\"" + txtExtraRewardBF.getText() + "\"" + System.lineSeparator() +
-                            "faileffectb=\"" + (cmbVisualBF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualBF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+System.lineSeparator() +System.lineSeparator()+
+                    "optionb=\"" + txtOptionB.getText() + "\"" + System.lineSeparator() +
+                    "testb=\"" + comboCheckB.getSelectionModel().getSelectedItem() + "\"" + System.lineSeparator()+System.lineSeparator() +
+                    "successb=\"" + txtSuccessB.getText() + "\"" + System.lineSeparator() +
+                    "winprizeb=\"" + (cmbRewardsB.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsB.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+
+                    "winnumberb=\"" + txtRewardB.getText() + "\"" + System.lineSeparator() +
+                    "extra_winprizeb=\"" + (cmbExtraRewardsB.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsB.getSelectionModel().getSelectedItem())+ "\"" + System.lineSeparator()+
+                    "extra_winnumberb=\"" + txtExtraRewardB.getText() + "\"" + System.lineSeparator() +
+                    "wineffectb=" +(cmbVisualB.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualB.getSelectionModel().getSelectedItem())+ System.lineSeparator() + System.lineSeparator() +
+                    "failureb=\"" + txtFailureB.getText() + "\"" +System.lineSeparator() +
+                    "failprizeb=\"" + (cmbRewardsBF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsBF.getSelectionModel().getSelectedItem()) + "\"" +System.lineSeparator() +
+                    "failnumberb=\"" + txtRewardBF.getText() + "\"" + System.lineSeparator() +
+                    "extra_failprizeb=\"" + (cmbExtraRewardsBF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsBF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+
+                    "extra_failnumberb=\"" + txtExtraRewardBF.getText() + "\"" + System.lineSeparator() +
+                    "faileffectb=\"" + (cmbVisualBF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualBF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+System.lineSeparator() +System.lineSeparator()+
 
-                            "optionc=\"" + txtOptionC.getText() + "\"" + System.lineSeparator() +
-                            "testc=\"" + comboCheckC.getSelectionModel().getSelectedItem() + "\"" + System.lineSeparator()+System.lineSeparator() +
-                            "successc=\"" + txtSuccessC.getText() + "\"" + System.lineSeparator() +
-                            "winprizec=\"" + (cmbRewardsC.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsC.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator() +
-                            "winnumberc=\"" + txtRewardC.getText() + "\"" +System.lineSeparator()+
-                            "extra_winprizec=\"" + (cmbExtraRewardsC.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsC.getSelectionModel().getSelectedItem())+ "\"" + System.lineSeparator() +
-                            "extra_winnumberc=\"" + txtExtraRewardC.getText() + "\"" + System.lineSeparator() +
-                            "wineffectc=" +(cmbVisualC.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualC.getSelectionModel().getSelectedItem())+ System.lineSeparator()+System.lineSeparator()+
-                            "failurec=\"" + txtFailureC.getText() + "\"" + System.lineSeparator()+
-                            "failprizec=\"" + (cmbRewardsCF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsCF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator() +
-                            "failnumberc=\"" + txtRewardCF.getText() + "\"" + System.lineSeparator() +
-                            "extra_failprizec=\"" + (cmbExtraRewardsCF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsCF.getSelectionModel().getSelectedItem())+ "\"" + System.lineSeparator()+
-                            "extra_failnumberc=\"" + txtExtraRewardCF.getText() + "\"" + System.lineSeparator() +
-                            "faileffectc=\"" + (cmbVisualCF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualCF.getSelectionModel().getSelectedItem()) + "\"" +System.lineSeparator()+System.lineSeparator() +
+                    "optionc=\"" + txtOptionC.getText() + "\"" + System.lineSeparator() +
+                    "testc=\"" + comboCheckC.getSelectionModel().getSelectedItem() + "\"" + System.lineSeparator()+System.lineSeparator() +
+                    "successc=\"" + txtSuccessC.getText() + "\"" + System.lineSeparator() +
+                    "winprizec=\"" + (cmbRewardsC.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsC.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator() +
+                    "winnumberc=\"" + txtRewardC.getText() + "\"" +System.lineSeparator()+
+                    "extra_winprizec=\"" + (cmbExtraRewardsC.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsC.getSelectionModel().getSelectedItem())+ "\"" + System.lineSeparator() +
+                    "extra_winnumberc=\"" + txtExtraRewardC.getText() + "\"" + System.lineSeparator() +
+                    "wineffectc=" +(cmbVisualC.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualC.getSelectionModel().getSelectedItem())+ System.lineSeparator()+System.lineSeparator()+
+                    "failurec=\"" + txtFailureC.getText() + "\"" + System.lineSeparator()+
+                    "failprizec=\"" + (cmbRewardsCF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsCF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator() +
+                    "failnumberc=\"" + txtRewardCF.getText() + "\"" + System.lineSeparator() +
+                    "extra_failprizec=\"" + (cmbExtraRewardsCF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsCF.getSelectionModel().getSelectedItem())+ "\"" + System.lineSeparator()+
+                    "extra_failnumberc=\"" + txtExtraRewardCF.getText() + "\"" + System.lineSeparator() +
+                    "faileffectc=\"" + (cmbVisualCF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualCF.getSelectionModel().getSelectedItem()) + "\"" +System.lineSeparator()+System.lineSeparator() +
 
-                            "--Made with WOHMaker--=" + System.lineSeparator());
+                    "--Made with WOHMaker--=" + System.lineSeparator());
         }
 
     }
