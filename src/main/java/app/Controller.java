@@ -653,10 +653,8 @@ public class Controller implements Initializable {
 
      void refreshAutocompletion(TextField target, String type) {
 
-         AutoCompletionTextFieldBinding autocomplete = TextFields.new AutoCompletionTextFieldBinding(target,
+         AutoCompletionTextFieldBinding autocomplete = new AutoCompletionTextFieldBinding(target,
              param -> type.equals("items") ? itemList : type.equals("spells") ? spellList : null);
-
-
      }
 
     /**
