@@ -1,33 +1,47 @@
 package app;
 
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.BooleanProperty;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
-import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.stage.*;
-import javafx.util.Pair;
-
 import java.awt.Desktop;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
-import org.controlsfx.control.Notifications;
-import org.controlsfx.control.textfield.AutoCompletionBinding;
-import org.controlsfx.control.textfield.AutoCompletionBinding.AutoCompletionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.StageStyle;
+import javafx.util.Pair;
 
 public class Controller implements Initializable {
 
@@ -960,52 +974,52 @@ public class Controller implements Initializable {
                     "about=\"" + textDesc.getText() + "\"" + System.lineSeparator() +
                     "author=\"" + txtAuthor.getText() + "\"" + System.lineSeparator() +
                     "contact=\"" + txtContact.getText() + "\"" + System.lineSeparator()+System.lineSeparator() +
-                    "flavaaaor=\"" + textFlav.getText() + "\"" + System.lineSeparator() +
+                    "flavor=\"" + textFlav.getText().replace("\n", "#") + "\"" + System.lineSeparator() +
                     "image=\"" + txtPic.getText() +"\"" +System.lineSeparator()+
                     "big=\"" + (chkBigArt.isSelected()? "1": "0") +"\"" + System.lineSeparator() +
                     "wavy_art=\"" + (chkWavy.isSelected()? "1": "0") +"\"" + System.lineSeparator() +
                     "wavy_speed=\"" + String.format("%.1f",sldWavy.getValue()) + "\"" + System.lineSeparator() +
                     "options=\"" + cmbOptions.getSelectionModel().getSelectedItem() + "\"" + System.lineSeparator()+System.lineSeparator() +System.lineSeparator() +
 
-                    "optiona=\"" + txtOptionA.getText() + "\"" + System.lineSeparator() +
+                    "optiona=\"" + txtOptionA.getText().replace("\n", "#") + "\"" + System.lineSeparator() +
                     "testa=\"" + comboCheckA.getSelectionModel().getSelectedItem() + "\"" + System.lineSeparator()+System.lineSeparator()+
-                    "successa=\"" + txtSuccessA.getText() + "\"" + System.lineSeparator() +
+                    "successa=\"" + txtSuccessA.getText().replace("\n", "#") + "\"" + System.lineSeparator() +
                     "winprizea=\"" + (cmbRewardsA.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsA.getSelectionModel().getSelectedItem()) + "\"" +System.lineSeparator()+
                     "winnumbera=\"" + txtRewardA.getText() + "\"" +System.lineSeparator() +
                     "extra_winprizea=\"" +  (cmbExtraRewardsA.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsA.getSelectionModel().getSelectedItem())+ "\"" + System.lineSeparator() +
                     "extra_winnumbera=\"" + txtExtraRewardA.getText() + "\"" +System.lineSeparator() +
                     "wineffecta=" + (cmbVisualA.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualA.getSelectionModel().getSelectedItem())+ System.lineSeparator() +System.lineSeparator() +
-                    "failurea=\"" + txtFailureA.getText() + "\"" + System.lineSeparator() +
+                    "failurea=\"" + txtFailureA.getText().replace("\n", "#") + "\"" + System.lineSeparator() +
                     "failprizea=\"" +  (cmbRewardsAF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsAF.getSelectionModel().getSelectedItem())+ "\"" +System.lineSeparator()+
                     "failnumbera=\"" + txtRewardAF.getText() + "\"" + System.lineSeparator() +
                     "extra_failprizea=\"" + (cmbExtraRewardsAF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsAF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+
                     "extra_failnumbera=\"" + txtExtraRewardAF.getText() + "\"" + System.lineSeparator() +
                     "faileffecta=\"" + (cmbVisualAF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualAF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+System.lineSeparator() +System.lineSeparator() +
 
-                    "optionb=\"" + txtOptionB.getText() + "\"" + System.lineSeparator() +
+                    "optionb=\"" + txtOptionB.getText().replace("\n", "#") + "\"" + System.lineSeparator() +
                     "testb=\"" + comboCheckB.getSelectionModel().getSelectedItem() + "\"" + System.lineSeparator()+System.lineSeparator() +
-                    "successb=\"" + txtSuccessB.getText() + "\"" + System.lineSeparator() +
+                    "successb=\"" + txtSuccessB.getText().replace("\n", "#") + "\"" + System.lineSeparator() +
                     "winprizeb=\"" + (cmbRewardsB.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsB.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+
                     "winnumberb=\"" + txtRewardB.getText() + "\"" + System.lineSeparator() +
                     "extra_winprizeb=\"" + (cmbExtraRewardsB.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsB.getSelectionModel().getSelectedItem())+ "\"" + System.lineSeparator()+
                     "extra_winnumberb=\"" + txtExtraRewardB.getText() + "\"" + System.lineSeparator() +
                     "wineffectb=" +(cmbVisualB.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualB.getSelectionModel().getSelectedItem())+ System.lineSeparator() + System.lineSeparator() +
-                    "failureb=\"" + txtFailureB.getText() + "\"" +System.lineSeparator() +
+                    "failureb=\"" + txtFailureB.getText().replace("\n", "#") + "\"" +System.lineSeparator() +
                     "failprizeb=\"" + (cmbRewardsBF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsBF.getSelectionModel().getSelectedItem()) + "\"" +System.lineSeparator() +
                     "failnumberb=\"" + txtRewardBF.getText() + "\"" + System.lineSeparator() +
                     "extra_failprizeb=\"" + (cmbExtraRewardsBF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsBF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+
                     "extra_failnumberb=\"" + txtExtraRewardBF.getText() + "\"" + System.lineSeparator() +
                     "faileffectb=\"" + (cmbVisualBF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualBF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator()+System.lineSeparator() +System.lineSeparator()+
 
-                    "optionc=\"" + txtOptionC.getText() + "\"" + System.lineSeparator() +
+                    "optionc=\"" + txtOptionC.getText().replace("\n", "#") + "\"" + System.lineSeparator() +
                     "testc=\"" + comboCheckC.getSelectionModel().getSelectedItem() + "\"" + System.lineSeparator()+System.lineSeparator() +
-                    "successc=\"" + txtSuccessC.getText() + "\"" + System.lineSeparator() +
+                    "successc=\"" + txtSuccessC.getText().replace("\n", "#") + "\"" + System.lineSeparator() +
                     "winprizec=\"" + (cmbRewardsC.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsC.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator() +
                     "winnumberc=\"" + txtRewardC.getText() + "\"" +System.lineSeparator()+
                     "extra_winprizec=\"" + (cmbExtraRewardsC.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsC.getSelectionModel().getSelectedItem())+ "\"" + System.lineSeparator() +
                     "extra_winnumberc=\"" + txtExtraRewardC.getText() + "\"" + System.lineSeparator() +
                     "wineffectc=" +(cmbVisualC.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualC.getSelectionModel().getSelectedItem())+ System.lineSeparator()+System.lineSeparator()+
-                    "failurec=\"" + txtFailureC.getText() + "\"" + System.lineSeparator()+
+                    "failurec=\"" + txtFailureC.getText().replace("\n", "#") + "\"" + System.lineSeparator()+
                     "failprizec=\"" + (cmbRewardsCF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbRewardsCF.getSelectionModel().getSelectedItem()) + "\"" + System.lineSeparator() +
                     "failnumberc=\"" + txtRewardCF.getText() + "\"" + System.lineSeparator() +
                     "extra_failprizec=\"" + (cmbExtraRewardsCF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbExtraRewardsCF.getSelectionModel().getSelectedItem())+ "\"" + System.lineSeparator()+
