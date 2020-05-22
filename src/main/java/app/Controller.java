@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -24,6 +25,9 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
+import org.controlsfx.control.Notifications;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
+import org.controlsfx.control.textfield.AutoCompletionBinding.AutoCompletionEvent;
 
 public class Controller implements Initializable {
 
@@ -356,12 +360,9 @@ public class Controller implements Initializable {
             tempWarnList.add(new Pair(lblWarnings.get(i),optionStrings.get(i)));
         }
 
-        tempWarnList.forEach(pair -> {
-            pair.getValue().textProperty().addListener((ob,old,newValue) -> {
-                System.out.println(newValue.length());
-                pair.getKey().setVisible(newValue.length()>220);
-            });
-        });
+        tempWarnList.forEach(pair -> pair.getValue().textProperty().addListener((ob,old,newValue) -> {
+            pair.getKey().setVisible(newValue.length()>250);
+        }));
 
         chkWavy.selectedProperty().addListener((ob,old,newValue) -> sldWavy.setDisable(!newValue));
         sldWavy.valueProperty().addListener((ob,old,newValue) -> lblWavyVal.setText(String.format("%.1f", newValue)));
@@ -378,25 +379,26 @@ public class Controller implements Initializable {
             temp.add(new Pair(comboRewards.get(i),txtRewardList.get(i)));
         }
 
-        temp.forEach(pair -> {
-            pair.getKey().getSelectionModel().selectedItemProperty().addListener(comb -> {
-                final String selectedItem = pair.getKey().getSelectionModel().getSelectedItem();
-                final TextField txtField = pair.getValue();
-                txtField.setDisable(false);
+        temp.forEach(pair -> pair.getKey().getSelectionModel().selectedItemProperty().addListener(comb -> {
+            final String selectedItem = pair.getKey().getSelectionModel().getSelectedItem();
+            TextField txtField = pair.getValue();
 
-                if (txtField.getText().equals("random")) txtField.setText(" ");
+            txtField.setDisable(false);
 
-                if (selectedItem.equals("item"))
-                    refreshAutocompletion(txtField, "items");
-                else if (pair.getKey().getSelectionModel().getSelectedItem().equals("spell"))
-                    refreshAutocompletion(txtField, "spells");
-                else if (new ArrayList(Arrays.asList("injury","curse","ally")).contains(selectedItem)) {
-                    refreshAutocompletion(txtField,"none");
-                    txtField.setDisable(true);
-                    txtField.setText("random");
-                }
-            });
-        });
+            if (txtField.getText().equals("random")) txtField.setText(" ");
+
+            if (selectedItem.equals("item"))
+                refreshAutocompletion(txtField, "items");
+            else if (selectedItem.equals("spell"))
+                refreshAutocompletion(txtField, "spells");
+            else if (new ArrayList(Arrays.asList("injury","curse","ally")).contains(selectedItem)) {
+                refreshAutocompletion(txtField,"none");
+                txtField.setDisable(true);
+                txtField.setText("random");
+            } else {
+                refreshAutocompletion(txtField,"none");
+            }
+        }));
 
         // Image dialog
 
@@ -538,7 +540,13 @@ public class Controller implements Initializable {
             }
             if (!Objects.isNull(ito)) {
                 try {
-                    saveIto(ito);
+                    boolean success = saveIto(ito);
+                    Alert alert = new Alert(success? AlertType.INFORMATION: AlertType.ERROR);
+                        alert.setTitle("WOHMaker");
+                        alert.setHeaderText(success? "Event saved" : "Error");
+                        alert.setContentText(success? "Event was stored sucessfully to "+ito.getAbsolutePath(): "Couldn't save event");
+                        alert.getButtonTypes().setAll(ButtonType.OK);
+                        alert.showAndWait();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -644,11 +652,11 @@ public class Controller implements Initializable {
      */
 
      void refreshAutocompletion(TextField target, String type) {
-         AutoCompletionTextFieldBinding autocomplete = new AutoCompletionTextFieldBinding(target,
-             param -> type.equals("items") ? itemList : type.equals("spells") ? spellList : new ArrayList());
-         autocomplete.setDelay(2);
-         autocomplete.setVisibleRowCount(8);
-         System.out.println("Refreshed "+target +" with "+spellList.size());
+
+         AutoCompletionTextFieldBinding autocomplete = TextFields.new AutoCompletionTextFieldBinding(target,
+             param -> type.equals("items") ? itemList : type.equals("spells") ? spellList : null);
+
+
      }
 
     /**
@@ -881,6 +889,8 @@ public class Controller implements Initializable {
                     if (s.startsWith("options")) cmbOptions.getSelectionModel().select(substring);
                     if (s.startsWith("about")) textDesc.setText(substring);
                     if (s.startsWith("flavor")) textFlav.setText(substring);
+                    if (s.startsWith("wavy_art")) chkWavy.setSelected(substring.equals("1"));
+                    if (s.startsWith("wavy_speed")) sldWavy.setValue(Double.parseDouble(substring));
                     if (s.startsWith("optiona")) txtOptionA.setText(substring);
                     if (s.startsWith("optionb")) txtOptionB.setText(substring);
                     if (s.startsWith("optionc")) txtOptionC.setText(substring);
@@ -933,7 +943,7 @@ public class Controller implements Initializable {
                         doImageCalculations();
                     }
                 }catch (StringIndexOutOfBoundsException | NumberFormatException e) {
-                    System.out.println(s);
+                    e.printStackTrace();
                 }
             }
         } catch (IOException e) {
@@ -941,9 +951,10 @@ public class Controller implements Initializable {
         }
     }
 
-    void saveIto(File ito) throws IOException {
-
+    boolean saveIto(File ito) throws IOException {
+    try{
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(ito.toPath(), Charset.defaultCharset())) {
+
             bufferedWriter.write("[event]" + System.lineSeparator());
             bufferedWriter.write(
                 "name=\"" + textTitle.getText() + "\"" + System.lineSeparator() +
@@ -1004,7 +1015,10 @@ public class Controller implements Initializable {
                     "faileffectc=\"" + (cmbVisualCF.getSelectionModel().getSelectedItem().equals("none")? "" : cmbVisualCF.getSelectionModel().getSelectedItem()) + "\"" +System.lineSeparator()+System.lineSeparator() +
 
                     "--Made with WOHMaker--=" + System.lineSeparator());
+            return true;
         }
-
+        }catch(Exception e){
+        return false;
+        }
     }
 }

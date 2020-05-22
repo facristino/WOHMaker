@@ -12,7 +12,29 @@
   -fx-background-color: black;
 }
 
+.button {
+  -fx-font-family: Silver;
+  -fx-background-insets: 16,16,16,16;
+  -fx-font-size: 26;
+  }
 
+.button:hover {
+ -fx-font-weight: bold;
+ -fx-background-color: white;
+ -fx-font-fill: black;
+}
+
+.small {
+ -fx-background-insets: 18,18,18,18;
+  -fx-font-size: 19;
+}
+
+
+.silver {
+ -fx-font-family: Silver;
+  -fx-font-size: 25;
+   -fx-background-insets: 12,12,12;
+}
 
 .helpArea {
   -fx-text-fill: white;
